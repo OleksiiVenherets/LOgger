@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using Newtonsoft.Json;
 using System.IO;
 using System.Text;
-
 using System.Xml;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Logger
 {
@@ -18,7 +18,7 @@ namespace Logger
                 dirInfo.Create();
             }
 
-            using (var sWriter = new StreamWriter(path + "\\log.txt", true, System.Text.Encoding.Default))
+            using (var sWriter = new StreamWriter(path + "log.txt", true, Encoding.Default))
             {
                 sWriter.WriteLine(sbuilder);
             }
@@ -28,18 +28,18 @@ namespace Logger
         {
             if (!File.Exists(path + "\\log.xml"))
             {
-                var xmlWriterSettings = new XmlWriterSettings();
-                xmlWriterSettings.Indent = true;
-                xmlWriterSettings.NewLineOnAttributes = true;
-                using (XmlWriter xmlWriter = XmlWriter.Create(path + "\\log.xml", xmlWriterSettings))
+                var xmlWriterSettings = new XmlWriterSettings
                 {
+                    Indent = true,
+                    NewLineOnAttributes = true
+                };
+                using (var xmlWriter = XmlWriter.Create(path + "\\log.xml", xmlWriterSettings))
+                {
+                    xmlWriter.WriteStartElement("Logs");
                     xmlWriter.WriteElementString("message", logMessage);
-                    xmlWriter.WriteEndElement();
                     xmlWriter.WriteElementString("loglevel", logLevel.ToString());
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteElementString("name", module);
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteElementString("date", dateTime.ToString(CultureInfo.CurrentCulture));
+                    xmlWriter.WriteElementString("module", module);
+                    xmlWriter.WriteElementString("date", dateTime.ToString(CultureInfo.InvariantCulture));
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndDocument();
                     xmlWriter.Flush();
@@ -47,34 +47,40 @@ namespace Logger
             }
             else
             {
-                XmlDocument doc = new XmlDocument(); doc.Load(path + "\\log.xml");
-                using (XmlWriter xmlWriter = doc.CreateNavigator().AppendChild())
-                {
-                    xmlWriter.WriteElementString("message", logMessage);
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteElementString("loglevel", logLevel.ToString());
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteElementString("name", module);
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteElementString("date", dateTime.ToString(CultureInfo.CurrentCulture));
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndDocument();
-                    xmlWriter.Flush();
-                }
+                var doc = XDocument.Load(path + "\\log.xml");
+                var root = new XElement("log");
+                root.Add(new XElement("message", logMessage));
+                root.Add(new XElement("loglevel", logLevel.ToString()));
+                root.Add(new XElement("module", module));
+                root.Add(new XElement("date", dateTime.ToString(CultureInfo.InvariantCulture)));
+                doc.Element("Logs").Add(root);
+                doc.Save(path + "\\log.xml");
             }
+
         }
 
         public void AddToJson(object log, string path)
         {
-            var dirInfo = new DirectoryInfo(path);
-            if (!dirInfo.Exists)
+            if (!File.Exists(path + "\\log.json"))
             {
-                dirInfo.Create();
+                using (var fStream = new FileStream(path + "\\log.json", FileMode.Append, FileAccess.Write))
+                {
+                    using (var sWriter = new StreamWriter(fStream))
+                    {
+                        sWriter.Write(JObject.FromObject(log).ToString());
+                    }
+                }
             }
-            using (StreamWriter file = File.CreateText(path + "\\log.json"))
+            else
             {
-                var serializer = new JsonSerializer();
-                serializer.Serialize(file, log);
+                using (var fStream = new FileStream(path + "\\log.json", FileMode.Append, FileAccess.Write))
+                {
+                    using (var sWriter = new StreamWriter(fStream))
+                    {
+                        sWriter.WriteLine(JObject.FromObject(log) + "\n");
+                    }
+                }
+
             }
         }
     }
