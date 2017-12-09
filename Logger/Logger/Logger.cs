@@ -56,21 +56,21 @@ namespace Logger
 
         public void Log(string logMessage, LogLevel logLevel)
         {
-            if (logLevel <= Level)
+            if (logLevel < Level)
                 return;
             _logger.Log(logMessage, logLevel);
         }
 
         public void Log(string logMessage, LogLevel logLevel, DateTime dateTime)
         {
-            if (logLevel <= Level)
+            if (logLevel < Level)
                 return;
             _logger.Log(logMessage, logLevel, dateTime);
         }
 
         public void Log(string logMessage, LogLevel logLevel, DateTime dateTime, string module)
         {
-            if (logLevel <= Level)
+            if (logLevel < Level)
                 return;
             _logger.Log(logMessage, logLevel, dateTime, module);
         }
