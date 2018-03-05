@@ -1,0 +1,8 @@
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\bin\Release\Logger.dll.config
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\bin\Release\Logger.dll
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\bin\Release\Logger.pdb
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\bin\Release\Newtonsoft.Json.dll
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\bin\Release\Newtonsoft.Json.xml
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\obj\Release\Loger.csprojResolveAssemblyReference.cache
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\obj\Release\Logger.dll
+C:\Users\VenheretsOleksii\Documents\Visual Studio 2015\Projects\Logger\Logger\obj\Release\Logger.pdb
